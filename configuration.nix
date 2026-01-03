@@ -9,6 +9,7 @@
     [ # Include the results of the hardware scan.
       ./hardware-configuration.nix
       ./nix-ld-libs/ue5.nix
+      ./keyboard.nix
     ];
 
   # Bootloader.
@@ -72,25 +73,30 @@
     alsa.support32Bit = true;
     pulse.enable = true;
     # If you want to use JACK applications, uncomment this
-    #jack.enable = true;
+    jack.enable = true;
 
     # use the example session manager (no others are packaged yet so this is enabled by default,
     # no need to redefine it in your config for now)
     #media-session.enable = true;
   };
+  services.hardware.openrgb.enable = true;
 
   # Enable touchpad support (enabled default in most desktopManager).
   # services.xserver.libinput.enable = true;
 
+  users.groups.lexa = {};
+
   # Define a user account. Don't forget to set a password with ‘passwd’.
-  users.users.jozefk = {
+  users.users.rextens = {
     isNormalUser = true;
     description = "Jozef Kudrys";
-    extraGroups = [ "networkmanager" "wheel" ];
+    extraGroups = [ "networkmanager" "wheel" "libvirtd" "kvm" "lexa" ];
     packages = with pkgs; [
       kdePackages.kate
     #  thunderbird
     ];
+    uid = 1000;
+    home = "/home/jozefk/";
   };
 
   # Install firefox.
@@ -105,9 +111,55 @@
   # List packages installed in system profile. To search, run:
   # $ nix search wget
   environment.systemPackages = with pkgs; [
+    #GENERAL
     discord-ptb
+    pciutils
+    alsa-utils
+    dotnet-sdk_8
+    google-chrome
+    usbutils
+    fastfetch
+
+    kdePackages.oxygen
+
+    #IDE
     vscode
-    pkgs.jetbrains.rider
+    jetbrains.rider
+    jetbrains.rust-rover
+
+    #VIRTUALISATION
+    virt-manager
+
+
+
+    #RUST
+    rustc
+    cargo
+    rustfmt
+    #clippy
+    #pkg-config
+    #openssl
+
+    #RUST-BEVY
+    #vulkan-loader
+    #vulkan-validation-layers
+    #wayland.dev
+    #libxkbcommon
+    #xorg.libX11
+    #xorg.libXcursor
+    #xorg.libXi
+    #xorg.libXrandr
+    #alsa-lib
+    #udev.dev
+    #pkg-config
+
+    #RUST-EMBEDDED
+    #probe-rs-tools
+    #openocd
+    #picotool
+    #dfu-util
+
+
   #  vim # Do not forget to add an editor to edit configuration.nix! The Nano editor is also installed by default.
   #  wget
   ];
@@ -122,6 +174,21 @@
     "mem_sleep_default=deep"
     "amdgpu,runpm=0"
   ];
+
+  programs.virt-manager.enable = true;
+  users.groups.libvirtd.members = ["jozefk"];
+  virtualisation.libvirtd.enable = true;
+  virtualisation.spiceUSBRedirection.enable = true;
+
+
+
+
+
+
+  # hardware.pulseaudio.enable = false;
+
+
+
   # Some programs need SUID wrappers, can be configured further or are
   # started in user sessions.
   # programs.mtr.enable = true;
