@@ -44,20 +44,6 @@
     LC_TIME = "pl_PL.UTF-8";
   };
 
-  # Enable the X11 windowing system.
-  # You can disable this if you're only using the Wayland session.
-  services.xserver.enable = true;
-
-  # Enable the KDE Plasma Desktop Environment.
-  services.displayManager.sddm.enable = true;
-  services.desktopManager.plasma6.enable = true;
-
-  # Configure keymap in X11
-  services.xserver.xkb = {
-    layout = "pl";
-    variant = "";
-  };
-
   # Configure console keymap
   console.keyMap = "pl2";
 
@@ -79,6 +65,7 @@
     # no need to redefine it in your config for now)
     #media-session.enable = true;
   };
+
   services.hardware.openrgb.enable = true;
 
   # Enable touchpad support (enabled default in most desktopManager).
@@ -96,7 +83,6 @@
     #  thunderbird
     ];
     uid = 1000;
-    home = "/home/jozefk/";
   };
 
   # Install firefox.
@@ -115,7 +101,20 @@
     discord-ptb
     pciutils
     alsa-utils
-    dotnet-sdk_8
+
+    #dotnet-sdk_10
+    #dotnet-sdk_8
+
+    (
+      with dotnetCorePackages;
+      combinePackages [
+        sdk_8_0
+        sdk_10_0
+      ]
+    )
+
+    fsharp
+
     google-chrome
     usbutils
     fastfetch
@@ -126,6 +125,7 @@
     vscode
     jetbrains.rider
     jetbrains.rust-rover
+    jetbrains.datagrip
 
     #VIRTUALISATION
     virt-manager
@@ -136,6 +136,17 @@
     rustc
     cargo
     rustfmt
+
+    telegram-desktop
+    insomnia
+
+    orca-slicer
+
+    libreoffice-qt
+    hunspell
+    hunspellDicts.en_US
+    hunspellDicts.pl_PL
+    kitty
     #clippy
     #pkg-config
     #openssl
@@ -180,8 +191,12 @@
   virtualisation.libvirtd.enable = true;
   virtualisation.spiceUSBRedirection.enable = true;
 
+  hardware.opengl = {
+    enable = true;
+    driSupport32Bit = true;
 
 
+  };
 
 
 
